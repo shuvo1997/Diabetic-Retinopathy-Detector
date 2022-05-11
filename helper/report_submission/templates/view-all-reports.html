@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'w3.css' %}">
+	<meta charset="UTF-8">
+	<title>Submit a Report</title>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container" style="text-align: center;">
+	{% for report in reports %}
+    <div class="card" style="width: 50rem;">
+        <h5 class="card-title" style="text-align: center;">Report Number: {{report.id}} Patient Name: {{report.patient_name}}</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <figure>
+                <img class="card-img-top" src="{{report.leftRetina.url}}" alt="Card image cap">
+                <figcaption>Left Eye</figcaption>
+                </figure>
+            </div>
+            <div class="col-md-6">
+                <figure>
+                    <img class="card-img-top" src="{{report.rightRetina.url}}" alt="Card image cap">
+                    <figcaption>Right Eye</figcaption>
+                </figure>
+            </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{report.years_diabetes}} Years of Diabetes Weight: {{report.weight}} Kg</h5>
+          <a class= "reportButton btn btn-primary" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a> 
+          <p id="left_message{{report.id}}" style="text-align: center"></p>
+          <p id="right_message{{report.id}}" style="text-align: center"></p> 
+        </div>
+    </div>
+    <br>
+    <br>
+        {% comment %} <h3 style="text-align: center"></h3>
+        <img src = "{{report.leftRetina.url}}">
+        <img src = "{{report.rightRetina.url}}">
+        <a class= "reportButton" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a>
+        {% endcomment %}
+    {% endfor %}
+    </div>
+
+</body>
+        <!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity">  
+	<p>Made with 💝 By Shovon</p>
+</footer>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+$('.reportButton').click(function(){
+var left;
+var right;
+var id;
+left = $(this).attr("data-left");
+right = $(this).attr("data-right");
+id = $(this).attr("data-id");
+
+$.ajax(
+{
+    type:"GET",
+    url: "{% url 'generate_report' %}",
+    data:{
+            left_img: left,
+            right_img: right,
+    },
+    success: function( data ) 
+    {
+        console.log(data);
+        $('#left_message'+id).text(data.left_message);
+        $('#right_message'+id).text(data.right_message);
+
+    }
+ })
+});
+</script>
+{% comment %} <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+

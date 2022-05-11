@@ -8,60 +8,67 @@
         {% load static %}
         <link rel="stylesheet" href="{% static 'w3.css' %}">
         <style>
+            .divScroll {
+                overflow:scroll;
+                }
             body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
             .w3-bar,h1,button {font-family: "Montserrat", sans-serif}
             .fa-anchor,.fa-coffee {font-size:200px}
         </style>
     <body data-new-gr-c-s-check-loaded="14.1058.0" data-gr-ext-installed="">
 
-    <!-- Navbar -->
-    <div class="w3-top">
+<!-- Navbar -->
+<div class="w3-top">
     <div class="w3-bar w3-red w3-card w3-left-align w3-large">
-        <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Home</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Submit Report</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">View Report</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-padding-large w3-white">Login as Doctor</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white"> </a>
-    </div>
-
-    <!-- Navbar on small screens -->
-    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-padding-large">Link 1</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-padding-large">Link 2</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-padding-large">Link 3</a>
-        <a href="https://www.w3schools.com/w3css/tryw3css_templates_start_page.htm#" class="w3-bar-item w3-button w3-padding-large">Link 4</a>
-    </div>
-    </div>
-
+      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+      <a href="{% url 'home' %}" class="w3-bar-item w3-button w3-padding-large w3-hover-white">Home</a>
+      <a href="{% url 'submit_report' %}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Submit Report</a>
+      <a href="{% url 'all_reports' %}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-white">Login as Doctor</a>
+</div>
+<br>
     <!-- First Grid -->
-    <div class="w3-row-padding w3-padding-64 w3-container">
         <h1> View Patients Report </h1>
         {%for report in reports%}
             <div class="w3-card w3-container w3-center">
                 <p> Patient Name: {{report.patient_name}} </p>
                 <img src = "{{report.leftRetina.url}}">
                 <img src = "{{report.rightRetina.url}}">
-                 
+                <a class= "reportButton" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a>
+                <p id="message{{report.id}}"></p>
             </div> 
         {% endfor %}
-    </div>
-
-    
-
-    <!-- Footer -->
+        <!-- Footer -->
     <footer class="w3-container w3-padding-64 w3-center w3-opacity">  
-    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+        <p>Made with 💝 By Shovon</p>
     </footer>
 
-    <script>
-    // Used to toggle the menu on small screens when clicking on the menu button
-    function myFunction() {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
-    }
-    </script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    $('.reportButton').click(function(){
+    var left;
+    var right;
+    var id;
+    left = $(this).attr("data-left");
+    right = $(this).attr("data-right");
+    id = $(this).attr("data-id");
+
+    $.ajax(
+    {
+        type:"GET",
+        url: "{% url 'generate_report' %}",
+        data:{
+                left_img: left,
+                right_img: right,
+        },
+        success: function( data ) 
+        {
+            $('#message'+id).text(data);
+        }
+     })
+});
+</script>
+    
+
+
